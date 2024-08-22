@@ -1,13 +1,14 @@
 package kr.co.baki.myrestfulservice.controller;
 
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;
 import kr.co.baki.myrestfulservice.bean.Post;
 import kr.co.baki.myrestfulservice.bean.User;
 import kr.co.baki.myrestfulservice.exception.UserNotFoundException;
 import kr.co.baki.myrestfulservice.repository.PostRepository;
 import kr.co.baki.myrestfulservice.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +26,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/jpa")
 public class UserJpaController {
 
-    private UserRepository userRepository;
-    private PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
+    @Autowired
     public UserJpaController(UserRepository userRepository,PostRepository postRepository) {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
@@ -85,7 +87,8 @@ public class UserJpaController {
         post.setUser(user);
         postRepository.save(post);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(post.getId())
                 .toUri();
